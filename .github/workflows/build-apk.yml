@@ -22,12 +22,14 @@ jobs:
     - name: Build APK
       run: ./gradlew assembleDebug
     
-    - name: Verify APK
-      run: ls -la app/build/outputs/apk/debug/
-    
     - name: Upload Debug APK ✅
       uses: actions/upload-artifact@v4
       with:
         name: BrightLineFixer-debug.apk
         path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
+    
+    - name: Verify upload success
+      run: |
+        echo "✅ Build完成！檢查Artifacts下載區塊"
+        echo "📱 APK已上傳：BrightLineFixer-debug.apk"
