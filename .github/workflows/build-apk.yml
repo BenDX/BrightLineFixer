@@ -19,15 +19,21 @@ jobs:
         java-version: '17'
         cache: 'gradle'
     
-    - name: Build APK
-      run: ./gradlew assembleDebug --stacktrace
+    - name: Validate project structure
+      run: |
+        echo "=== 根目錄檔案 ==="
+        ls -la .
+        echo "=== app目錄 ==="
+        ls -la app/
+        echo "=== app/build.gradle ==="
+        cat app/build.gradle || echo "缺少 app/build.gradle"
     
-    - name: Display file structure
-      run: ls -la app/build/outputs/apk/debug/
+    - name: Build with detailed log
+      run: |
+        ./gradlew assembleDebug --stacktrace --info || ./gradlew assembleDebug --stacktrace
     
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: BrightLineFixer-debug.apk
-        path: app/build/outputs/apk/debug/app-debug.apk
-        retention-days: 30
+    - name: Show build results
+      if: always()
+      run: |
+        find . -name "*.apk" -type f || echo "No APK found"
+        ls -la app/build/ || echo "No app/build directory"
