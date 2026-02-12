@@ -1,4 +1,4 @@
-name: Build APK
+name: Build BrightLine APK
 on:
   push:
     branches: [ main ]
@@ -11,13 +11,25 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Build APK
-      uses: gradle/gradle-build-action@v2
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
       with:
-        arguments: assembleDebug
-        
+        distribution: 'zulu'
+        java-version: '17'
+        cache: 'gradle'
+    
+    # ⭐ 直接用系統gradle，永遠不碰gradlew
+    - name: Build APK
+      run: gradle :app:assembleDebug --no-daemon --stacktrace
+    
+    - name: List outputs
+      run: find app/build -name "*.apk" -type f
+    
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: BrightLineFixer.apk
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: |
+          app/build/outputs/apk/debug/app-debug.apk
+          app/build/outputs/**/*.apk
+        retention-days: 30
