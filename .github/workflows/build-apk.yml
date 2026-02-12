@@ -12,15 +12,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Check source code structure
-      run: |
-        echo "=== 檢查 Java/Kotlin 原始碼 ==="
-        find app/src/main/java -name "*.kt" -o -name "*.java" || echo "❌ 缺少原始碼檔案"
-        echo "=== 檢查 Layout ==="
-        ls -la app/src/main/res/layout/ || echo "❌ 缺少 layout 資料夾"
-        echo "=== AndroidManifest.xml ==="
-        cat app/src/main/AndroidManifest.xml || echo "❌ 缺少 AndroidManifest.xml"
-    
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
@@ -29,8 +20,14 @@ jobs:
         cache: 'gradle'
     
     - name: Build APK
-      run: ./gradlew assembleDebug --stacktrace --info || echo "Build failed - check logs above"
+      run: ./gradlew assembleDebug
     
-    - name: Show outputs
-      if: always()
-      run: find . -name "*.apk" || echo "No APK generated"
+    - name: Verify APK
+      run: ls -la app/build/outputs/apk/debug/
+    
+    - name: Upload Debug APK ✅
+      uses: actions/upload-artifact@v4
+      with:
+        name: BrightLineFixer-debug.apk
+        path: app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 30
