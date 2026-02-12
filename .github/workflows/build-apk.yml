@@ -22,14 +22,21 @@ jobs:
     - name: Build APK
       run: ./gradlew assembleDebug
     
-    - name: Upload Debug APK ✅
+    - name: 🔍 尋找所有APK檔案
+      run: |
+        echo "=== 尋找所有APK ==="
+        find . -name "*.apk" -type f || echo "❌ 完全沒找到APK"
+        echo "=== 檢查app/build結構 ==="
+        find app/build -type f -name "*.apk" || echo "❌ app/build無APK"
+        echo "=== 完整build目錄 ==="
+        find app/build -type d | head -20
+    
+    - name: 📤 上傳所有找到的APK
+      if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: BrightLineFixer-debug.apk
-        path: app/build/outputs/apk/debug/app-debug.apk
+        name: all-apks-found
+        path: |
+          app/build/**/*.apk
+          **/*.apk
         retention-days: 30
-    
-    - name: Verify upload success
-      run: |
-        echo "✅ Build完成！檢查Artifacts下載區塊"
-        echo "📱 APK已上傳：BrightLineFixer-debug.apk"
