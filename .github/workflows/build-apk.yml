@@ -1,5 +1,4 @@
 name: Build BrightLine APK
-
 on:
   push:
     branches: [ main ]
@@ -12,31 +11,22 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up JDK 17
+    - name: Set up JDK 11（匹配版本）
       uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
-        java-version: '17'
-        cache: 'gradle'
+        java-version: '11'
     
-    - name: Build APK（使用系統Gradle）
-      run: gradle assembleDebug --no-configuration-cache --stacktrace
+    - name: Setup Gradle 8.0
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: '8.0'
     
-    - name: 🔍 尋找所有APK檔案
-      run: |
-        echo "=== 尋找所有APK ==="
-        find . -name "*.apk" -type f || echo "❌ 完全沒找到APK"
-        echo "=== 檢查app/build結構 ==="
-        find app/build -type f -name "*.apk" || echo "❌ app/build無APK"
-        echo "=== 完整build目錄 ==="
-        find app/build -type d | head -20
+    - name: Build APK
+      run: ./gradlew assembleDebug
     
-    - name: 📤 上傳所有找到的APK
-      if: always()
+    - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: all-apks-found
-        path: |
-          app/build/**/*.apk
-          **/*.apk
-        retention-days: 30
+        name: BrightLineFixer.apk
+        path: app/build/outputs/apk/debug/app-debug.apk
