@@ -1,1 +1,15 @@
+pluginManagement {
+    repositories {
+        google()        // ⭐ 必須有這行！
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositories {
+        google()        // ⭐ 必須有這行！
+        mavenCentral()
+    }
+}
+rootProject.name = "BrightLineFixer"
 include ':app'
