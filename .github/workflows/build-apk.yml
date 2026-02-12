@@ -19,8 +19,8 @@ jobs:
         java-version: '17'
         cache: 'gradle'
     
-    - name: Build APK
-      run: ./gradlew assembleDebug
+    - name: Build APK（使用系統Gradle）
+      run: gradle assembleDebug --stacktrace
     
     - name: 🔍 尋找所有APK檔案
       run: |
