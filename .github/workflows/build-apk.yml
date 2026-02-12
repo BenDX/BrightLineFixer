@@ -20,7 +20,7 @@ jobs:
         cache: 'gradle'
     
     - name: Build APK（使用系統Gradle）
-      run: gradle assembleDebug --stacktrace
+      run: gradle assembleDebug --no-configuration-cache --stacktrace
     
     - name: 🔍 尋找所有APK檔案
       run: |

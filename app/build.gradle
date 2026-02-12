@@ -1,8 +1,7 @@
 plugins {
-    id 'com.android.application' version '8.2.0'
-    id 'org.jetbrains.kotlin.android' version '1.9.22'
+    id 'com.android.application' version '8.1.4' apply false  // 降級
+    id 'org.jetbrains.kotlin.android' version '1.9.10' apply false  // 降級
 }
-
 
 android {
     namespace 'com.benlin.brightlinefixer'
