@@ -19,16 +19,15 @@ jobs:
         java-version: '17'
         cache: 'gradle'
     
-    - name: Build with Gradle
-      run: ./gradlew assembleDebug
+    - name: Build APK
+      run: ./gradlew assembleDebug --stacktrace
     
-    - name: List APK outputs
-      run: find app/build/outputs -name "*.apk" -type f
-      
-    - name: Upload ALL APKs
+    - name: Display file structure
+      run: ls -la app/build/outputs/apk/debug/
+    
+    - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: all-apks
-        path: |
-          app/build/outputs/apk/**/*.apk
+        name: BrightLineFixer-debug.apk
+        path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
