@@ -60,6 +60,26 @@ class MainActivity : AppCompatActivity() {
             removeBrightnessOverlay()
             Toast.makeText(this, "亮線隱藏已停止", Toast.LENGTH_SHORT).show()
         }
+
+        val previewMask = findViewById<DraggableMaskView>(R.id.maskPreview)
+        
+        // 滑桿控制透明度
+        brightnessSlider.addOnChangeListener { _, value, _ ->
+            val alpha = (255 * (value / 100)).toInt()
+            previewMask.setMaskAlpha(alpha)
+            overlayView?.setMaskAlpha(alpha)
+        }
+        
+        // 拖曳位置同步
+        previewMask.setOnPositionChangedListener { position ->
+            linePositionEdit.setText(position.toString())
+            overlayView?.setBrightLineRect(Rect(position, 0, position + 50, 9999))
+        }
+        
+        applyButton.setOnClickListener {
+            val position = previewMask.x.toInt()
+            createBrightnessOverlay(position, 50)
+        }
     }
 
     @SuppressLint("WrongConstant")

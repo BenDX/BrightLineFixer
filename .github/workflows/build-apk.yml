@@ -12,6 +12,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
+    - name: Check source code structure
+      run: |
+        echo "=== 檢查 Java/Kotlin 原始碼 ==="
+        find app/src/main/java -name "*.kt" -o -name "*.java" || echo "❌ 缺少原始碼檔案"
+        echo "=== 檢查 Layout ==="
+        ls -la app/src/main/res/layout/ || echo "❌ 缺少 layout 資料夾"
+        echo "=== AndroidManifest.xml ==="
+        cat app/src/main/AndroidManifest.xml || echo "❌ 缺少 AndroidManifest.xml"
+    
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
@@ -19,21 +28,9 @@ jobs:
         java-version: '17'
         cache: 'gradle'
     
-    - name: Validate project structure
-      run: |
-        echo "=== 根目錄檔案 ==="
-        ls -la .
-        echo "=== app目錄 ==="
-        ls -la app/
-        echo "=== app/build.gradle ==="
-        cat app/build.gradle || echo "缺少 app/build.gradle"
+    - name: Build APK
+      run: ./gradlew assembleDebug --stacktrace --info || echo "Build failed - check logs above"
     
-    - name: Build with detailed log
-      run: |
-        ./gradlew assembleDebug --stacktrace --info || ./gradlew assembleDebug --stacktrace
-    
-    - name: Show build results
+    - name: Show outputs
       if: always()
-      run: |
-        find . -name "*.apk" -type f || echo "No APK found"
-        ls -la app/build/ || echo "No app/build directory"
+      run: find . -name "*.apk" || echo "No APK generated"
